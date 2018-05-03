@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          destroy-method="close" init-method="init">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://10.151.31.23:3306/federated" />
+        <property name="username" value="root" />
+        <property name="password" value="newpassword" />
+        <!--<property name="initialSize" value="" />-->
+        <!--<property name="minIdle" value="" />-->
+        <!--<property name="maxActive" value="" />-->
+        <!--&lt;!&ndash; 配置获取连接等待超时的时间 &ndash;&gt;-->
+        <!--<property name="maxWait" value="${datasource.max.wait}" />-->
+    </bean>
+    <bean id="rowMapper" class="org.springframework.jdbc.core.ColumnMapRowMapper"/>
+    <bean id="sqlPagingSupport" class="com.valueList.support.MysqlSqlPagingSupport">
+        <property name="database" value="mysql"/>
+    </bean>
+
+    <bean id="connectionCreator" class="net.mlw.vlh.adapter.jdbc.util.StandardConnectionCreator" />
+    <bean id="baseAdapter" class="com.valueList.adapter.SqlPagingMapAdapter">
+        <property name="connectionCreator" ref="connectionCreator" />
+        <property name="dataSource" ref="dataSource" />
+        <!--<property name="rowMapper" ref="rowMapper" />-->
+        <property name="sqlPagingSupport" ref="sqlPagingSupport" />
+        <!--<property name="defaultNumberPerPage" value="20"/>-->
+        <property name="showSql" value="true"/>
+    </bean>
+
+    <bean class="com.valueList.factorybean.ValueListHandlerFactory" >
+        <property name="adapterConfigLocations" >
+            <list>
+                <value>classpath:valuelist_test.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="com.valueList.formatter.NameFormatter"/>
+</beans>

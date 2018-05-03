@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <import resource="valuelist_base_mysql.xml" />
+
+    <bean class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="query.member">
+                    <bean parent="baseAdapter">
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                    SELECT
+                                        mm.id as id,
+                                        mm.signed_name as signName,
+                                        mm.sales_people as salesPeople
+                                    FROM m_merchant mm
+                                ]]>
+                            </value>
+                        </property>
+                        <property name="formatter">
+                            <map>
+                                <entry key="signName" value="NAME"/>
+                            </map>
+                        </property>
+                    </bean>
+                </entry>
+
+                <entry key="query.ciq.profile">
+                    <bean parent="baseAdapter">
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                    SELECT
+                                        cup.id as id,
+                                        cup.ciq_channel_name as channelName,
+                                        cup.commerceCode as commerceCode
+                                    FROM ciq_union_profile cup
+                                    WHERE
+                                        1=1
+                                    /~channelName:cup.ciq_channel_name = {channelName}~/
+                                ]]>
+                            </value>
+                        </property>
+
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!--步骤1-->
+    <!--<bean id="queryMember" parent="baseAdapter" >-->
+        <!--<property name="sql">-->
+            <!--<value>-->
+                <!--<![CDATA[-->
+                    <!--SELECT-->
+                        <!--mm.id as id,-->
+                        <!--mm.signed_name as signName,-->
+                        <!--mm.sales_people as salesPeople-->
+                    <!--FROM m_merchant mm-->
+                <!--]]>-->
+            <!--</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--<bean id="valueListHandler" class="net.mlw.vlh.DefaultValueListHandlerImpl">-->
+        <!--<property name="config.adapters">-->
+            <!--<map>-->
+                <!--<entry key="query.member" value-ref="queryMember"/>-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
+</beans>
